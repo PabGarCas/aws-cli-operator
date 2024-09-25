@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: aws-cli-operator
+automountServiceAccountToken: true
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: aws-cli-operator
+rules:
+- apiGroups: [""]
+  resources: [""]
+  verbs: [""]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: aws-cli-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: aws-cli-operator
+subjects: 
+- kind: ServiceAccount
+  name: aws-cli-operator
+  namespace: aws-cli-operator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: operator
+spec:
+  selector:
+    matchLabels:
+      app: aws-cli-operator
+      component: manager
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: aws-cli-operator
+        component: manager
+    spec:
+      serviceAccountName: aws-cli-operator
+      containers:
+      - name: operator
+        image: aws-cli-operator:v1
