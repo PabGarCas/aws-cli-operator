@@ -1,5 +1,7 @@
-#!/usr/bin/python3
+
 import time
+from kubernetes import client, config, watch
+
 while True:
-    print("I'm managing! Operatorrr...")
+    print("Im managing! Operatorrr...")
     time.sleep(5)
