@@ -8,10 +8,13 @@ class AwsOperator:
     
     def getCredentials():
         True
-        
 
 # Main #
 aws = AwsOperator()
-while True:
+kh = KubeHandler()
 
+while True:
+    print("Detected AWS credentials:")
+    print(kh.list_aws_credentials())
+    print("Going to sleep")
     time.sleep(5)
