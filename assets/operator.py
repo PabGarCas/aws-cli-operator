@@ -1,7 +1,17 @@
 
 import time
-from kubernetes import client, config, watch
+import KubeHandler
 
+class AwsOperator:
+    def __init__(self):
+        True
+    
+    def getCredentials():
+        True
+        
+
+# Main #
+aws = AwsOperator()
 while True:
-    print("Im managing! Operatorrr...")
+
     time.sleep(5)

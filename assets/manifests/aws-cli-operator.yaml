@@ -12,7 +12,19 @@ metadata:
 rules:
 - apiGroups: [""]
   resources: ["pods"]
-  verbs: ["get", "list", "create", "delete"]
+  verbs: ["get", "list", "create", "delete", "update", "patch"]
+- apiGroups: ["kai.aws-operator"]
+  resources: ["awscredentials"]
+  verbs: ["get", "list", "create", "delete", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: aws-cli-operator
+rules:
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get", "list", "watch", "create"] 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -22,10 +34,22 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: aws-cli-operator
-subjects: 
+subjects:
 - kind: ServiceAccount
   name: aws-cli-operator
-  namespace: aws-cli-operator
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: aws-cli-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: aws-cli-operator
+subjects:
+- kind: ServiceAccount
+  name: aws-cli-operator
+  namespace: default
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -47,6 +71,9 @@ spec:
       containers:
       - name: operator
         image: aws-cli-operator:v1
+        env:
+        - name: K8S_NAMESPACE
+          value: "default"
         resources:
           limits: 
             cpu: 100m
